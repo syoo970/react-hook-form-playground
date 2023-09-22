@@ -1,19 +1,23 @@
-import { Controller } from "react-hook-form";
-import type { ControllerProps } from "react-hook-form";
-import { Input as AInput } from "antd";
+import { Input as AntdInput, InputProps } from "antd";
+import { useController } from "react-hook-form";
+import type {
+  FieldPath,
+  FieldValues,
+  UseControllerProps,
+} from "react-hook-form";
 
-interface CustomInputProps {
-  controlProp: ControllerProps;
-  Component: typeof AInput;
+interface CustomInputProps<T extends FieldValues, K extends FieldPath<T>>
+  extends InputProps {
+  controllerProps: UseControllerProps<T, K>;
 }
 
-const Input = ({ controlProp, Component }: CustomInputProps) => {
-  return (
-    <Controller
-      {...controlProp}
-      render={(...props) => <Component {...props} />}
-    />
-  );
+const Input = <T extends FieldValues, K extends FieldPath<T>>({
+  controllerProps,
+  ...props
+}: CustomInputProps<T, K>) => {
+  const { field } = useController({ ...controllerProps });
+
+  return <AntdInput {...field} {...props} />;
 };
 
 export default Input;
